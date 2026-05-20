@@ -24,7 +24,7 @@ datos_enfermedad_ruta <- datos_enfermedad_ruta %>%
 # ----------- SERIALIZACIÓN ------------
 
 # 1. Guardar grafo
-ruta_guardado_asociaciones <- "../RESULTADOS/diseases_pathways_association_ctd.ttl"
+ruta_guardado_asociaciones <- "../RESULTADOS/CTD_Diseases_Pathways_association.ttl"
 cat("", file = ruta_guardado_asociaciones)
 
 # 2. Prefijos
