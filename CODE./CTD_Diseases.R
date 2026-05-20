@@ -91,6 +91,5 @@ for (i in 1:nrow(datos_enfermedades)) {
 }
 
 
-# 5. Guardar el grafo definitivo en un archivo
-ruta_guardado <- "/Users/mersmac/Desktop/TFG/RESULTADOS/Diseases2_ctd.ttl"
-rdf_serialize(grafo_enfermedades, doc = ruta_guardado, format = "turtle")
+# 5. Guardar grafo en archivo
+rdf_serialize(mi_grafo, doc = "../RESULTADOS/CTD_Diseases.ttl", format = "turtle")
