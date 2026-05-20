@@ -71,5 +71,4 @@ for (i in 1:nrow(datos_drugbank)) {
 }
 
 # 4. Guardar grafo
-ruta_guardado <- "/Users/mersmac/Desktop/TFG/RESULTADOS/drugbank_vocabulary.ttl"
-rdf_serialize(grafo_drugbank, doc = ruta_guardado, format = "turtle")
+rdf_serialize(grafo_drugbank, doc = "../RESULTADOS/Drugbank_vocabulary.ttl", format = "turtle")
