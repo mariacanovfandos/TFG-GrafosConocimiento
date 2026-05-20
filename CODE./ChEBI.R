@@ -125,5 +125,4 @@ for (i in 1:nrow(datos_chebi)) {
 }
 
 # Guardar
-ruta_guardado <- "/Users/mersmac/Desktop/TFG/RESULTADOS/ChEBI_DB222.ttl"
-rdf_serialize(grafo_chebi, doc = ruta_guardado, format = "turtle")
+rdf_serialize(grafo_chebi, doc = "../RESULTADOS/ChEBI.ttl", format = "turtle")
