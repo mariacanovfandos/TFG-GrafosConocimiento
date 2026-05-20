@@ -90,5 +90,4 @@ for (i in 1:nrow(datos_quimicos)) {
 }
 
 # 4. Guardar el archivo
-ruta_guardado_quimicos <- "/Users/mersmac/Desktop/TFG/RESULTADOS/Chemicals_ctd2.ttl"
-rdf_serialize(grafo_quimicos, doc = ruta_guardado_quimicos, format = "turtle")
+rdf_serialize(grafo_quimicos, doc = "../RESULTADOS/CTD_Chemicals.ttl", format = "turtle")
