@@ -132,7 +132,6 @@ for (i in 1:nrow(datos_gen_enfermedad)) {
   }
 }
 
-# 4. Guardar el grafo definitivo en un archivo
-ruta_guardado <- "/Users/mersmac/Desktop/TFG/RESULTADOS/Curated_genes_diseases2.ttl"
-rdf_serialize(grafo_gen_enfermedad, doc = ruta_guardado, format = "turtle")
+# 4. Guardar grafo en archivo
+rdf_serialize(grafo_gen_enfermedad, doc = "../RESULTADOS/CTD_Gene_Disease_association.ttl", format = "turtle")
 
