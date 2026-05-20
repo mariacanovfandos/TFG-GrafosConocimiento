@@ -27,7 +27,7 @@ datos_quimico_gen <- datos_quimico_gen %>%
 # ----------- SERIALIZACIÓN ------------
 
 # 1. Guardar grafo
-ruta_guardado_cg <- "/Users/mersmac/Desktop/TFG/RESULTADOS/Chem_gene_interactions2.ttl"
+ruta_guardado_cg <- "../RESULTADOS/CTD_Chem_Gene_inxs_ctd.ttl"
 cat("", file = ruta_guardado_cg)
 
 rdf <- "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
