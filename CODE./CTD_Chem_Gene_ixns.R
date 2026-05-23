@@ -16,7 +16,7 @@ datos_quimico_gen <- datos_quimico_gen %>%
   set_names(c("ChemicalName", "ChemicalID", "CasRN", "GeneSymbol", "GeneID", 
               "GeneForms", "Organism", "OrganismID", "Interaction", 
               "InteractionActions", "PubMedIDs")) %>%
-  select(ChemicalID, GeneSymbol, OrganismID, InteractionActions, PubMedIDs) %>%
+  select(ChemicalID, GeneSymbol, GeneID, OrganismID, InteractionActions, PubMedIDs) %>%
   mutate(across(everything(), as.character)) %>%
   mutate(across(everything(), ~na_if(., ""))) %>%
   filter(OrganismID == "9606") %>%
@@ -47,6 +47,7 @@ for (i in 1:nrow(datos_quimico_gen)) {
   # Extraer datos
   chem_id <- datos_quimico_gen$ChemicalID[i]
   gene_symbol <- datos_quimico_gen$GeneSymbol[i]
+  gene_id <- datos_quimico_gen$GeneID[i] 
   interaccion_val <- datos_quimico_gen$InteractionActions[i]
   pubmed <- datos_quimico_gen$PubMedIDs[i]
   
@@ -55,9 +56,9 @@ for (i in 1:nrow(datos_quimico_gen)) {
   # Crear URI
   uri_asociacion <- paste0("<", assoc_base, chem_limpio, "--", gene_symbol, ">")
   uri_quimico <- paste0("<", mesh_prefix, chem_limpio, ">")
-  uri_gen <- paste0("<", gene_base, gene_symbol, ">")
+  uri_gen <- paste0("<", gene_base, gene_id, ">")
   
-  # Vector temporal para guardar líneas de texto de la iteración
+  # Vector temporal
   lineas <- c()
   
   # Tripletas Estructurales
@@ -68,21 +69,19 @@ for (i in 1:nrow(datos_quimico_gen)) {
   lineas <- c(lineas, paste(uri_asociacion, 
                             paste0("<", rdf, "subject>"), 
                             uri_quimico, "."))
-  
   lineas <- c(lineas, paste(uri_asociacion, 
                             paste0("<", rdf, "object>"), 
                             uri_gen, "."))
   
   lineas <- c(lineas, paste(uri_gen, 
                             paste0("<", rdfs, "label>"), 
-                            paste0("\"", datos_quimico_gen$GeneSymbol[i], "\""), 
-                            "."))
+                            paste0("\"", gene_symbol, "\""), "."))
   
   lineas <- c(lineas, paste(uri_gen, 
                             paste0("<", rdf, "type>"), 
                             paste0("<", sio, "SIO_010035> .")))
-
-   lineas <- c(lineas, paste(uri_quimico, 
+  
+  lineas <- c(lineas, paste(uri_quimico, 
                             paste0("<", bao, "BAO_0000211>"), 
                             uri_gen, "."))
   
@@ -114,7 +113,6 @@ for (i in 1:nrow(datos_quimico_gen)) {
     }
   }
   
-  # Escribir bloque de texto en el archivo
   cat(paste(lineas, collapse = "\n"), "\n", file = ruta_guardado_cg, append = TRUE)
   
   # Avance
@@ -122,3 +120,4 @@ for (i in 1:nrow(datos_quimico_gen)) {
     message(paste("Procesadas", i, "filas de", nrow(datos_quimico_gen)))
   }
 }
+
