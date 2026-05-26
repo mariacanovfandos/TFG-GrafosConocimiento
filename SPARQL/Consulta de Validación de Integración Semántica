@@ -1,0 +1,42 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sio: <http://semanticscience.org/resource/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX schema: <https://schema.org/>
+PREFIX bao: <http://www.bioassayontology.org/bao#>
+
+SELECT ?Quimico ?rol_quimico ?mecanismo_accion ?gen
+        (GROUP_CONCAT(DISTINCT ?pmid_qg; separator=", ") AS ?evidencias_Quimico_Gen)
+        (GROUP_CONCAT(DISTINCT ?pmid_ge; separator=", ") AS ?evidencias_Gen_Enfermedad)
+WHERE {
+    ?asoc_ge rdf:type sio:SIO_000983 ;
+             rdf:subject ?gen ;
+             rdf:object ?nodo_enfermedad ;
+             sio:SIO_000772 ?art_ge .
+    ?nodo_enfermedad rdfs:label ?nombre_enfermedad .
+    ?art_ge schema:identifier ?pmid_ge .
+
+    FILTER(regex(?nombre_enfermedad, "ischemic stroke", "i") || regex(?nombre_enfermedad, "brain ischemia", "i"))
+
+    ?asoc_qg rdf:type sio:SIO_001257 ;
+             rdf:subject ?quimico_ctd ;
+             rdf:object ?gen ;
+             bao:BAO_0000196 ?mecanismo_accion ;
+             sio:SIO_000772 ?art_qg .
+
+    ?quimico_ctd rdfs:label ?Quimico ;
+                 owl:sameAs ?inchikey .
+
+    ?art_qg schema:identifier ?pmid_qg .
+
+    ?quimico_chebi owl:sameAs ?inchikey ;
+                   sio:SIO_000008 ?rol_quimico .
+}
+GROUP BY ?Quimico ?rol_quimico ?mecanismo_accion ?gen
+ORDER BY ?gen ?Quimico
+LIMIT 100
+
+
+
+
+
