@@ -18,6 +18,7 @@ Para alcanzar este propósito general, se proponen los siguientes objetivos espe
 ## Estructura del Repositorio
 - `/CODE/`: Scripts en R para la extracción, limpieza (`dplyr`, `data.table`) y serialización a tripletas RDF (`rdflib`). Contiene los módulos secuenciales para procesar químicos, enfermedades, genes y sus interacciones.
 - `/RESULTADOS/`: Directorio de salida donde se alojan los archivos `.ttl` generados, listos para su importación al motor de grafos.
+- `/SPARQL/`: Código de las consultas realizadas en el trabajo.
 - `/DIAGRAMA CONCEPTUAL/`: Documentación visual y técnica de la red.
     - `Esquema Semántico.png`: Representación gráfica de la arquitectura del grafo.
     - `Prefijos Oontologias.xlsx`: Diccionario de prefijos y namespaces utilizados (MESH, OMIM, SIO, etc.).
