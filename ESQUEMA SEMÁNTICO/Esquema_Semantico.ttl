@@ -1,0 +1,64 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix sio: <http://semanticscience.org/resource/> .
+@prefix bao: <http://www.bioassayontology.org/bao#> .
+@prefix obo: <http://purl.obolibrary.org/obo/> .
+@prefix schema: <https://schema.org/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix biolink: <https://w3id.org/biolink/vocab/> .
+@prefix tfg: <http://tfg.org/ontology/> .
+
+# --- DEFINICIÓN DE CLASES PRINCIPALES ---
+
+sio:SIO_010004 a owl:Class ; rdfs:label "Chemical Entity" .
+sio:SIO_010035 a owl:Class ; rdfs:label "Gene" .
+sio:SIO_010043 a owl:Class ; rdfs:label "Protein" .
+sio:SIO_010299 a owl:Class ; rdfs:label "Disease" .
+sio:SIO_001107 a owl:Class ; rdfs:label "Pathway" .
+sio:SIO_000154 a owl:Class ; rdfs:label "Article" .
+
+# --- CLASES DE ASOCIACIÓN (REIFICACIÓN) ---
+
+sio:SIO_001257 a owl:Class ; rdfs:label "Chemical-Gene Association" .
+sio:SIO_000983 a owl:Class ; rdfs:label "Gene-Disease Association" .
+sio:SIO_000993 a owl:Class ; rdfs:label "Chemical-Disease Association" .
+biolink:Association a owl:Class ; rdfs:label "Biolink Association" .
+
+# --- DEFINICIÓN DE PROPIEDADES DE OBJETO ---
+
+# Relaciones Directas
+bao:BAO_0000211 a owl:ObjectProperty ; 
+    rdfs:label "has target" ;
+    rdfs:domain sio:SIO_010004 ; 
+    rdfs:range sio:SIO_010035 .
+
+sio:SIO_010078 a owl:ObjectProperty ; 
+    rdfs:label "encodes" ;
+    rdfs:domain sio:SIO_010035 ; 
+    rdfs:range sio:SIO_010043 .
+
+obo:RO_0002331 a owl:ObjectProperty ; 
+    rdfs:label "involved in" ;
+    rdfs:domain sio:SIO_010035 ; 
+    rdfs:range sio:SIO_001107 .
+
+obo:RO_0003303 a owl:ObjectProperty ; 
+    rdfs:label "causes condition" ;
+    rdfs:domain sio:SIO_010004 ; 
+    rdfs:range sio:SIO_010299 .
+
+# Relaciones Estructurales
+rdf:subject a owl:ObjectProperty ; rdfs:label "has subject" .
+rdf:object a owl:ObjectProperty ; rdfs:label "has object" .
+sio:SIO_000772 a owl:ObjectProperty ; rdfs:label "has evidence" .
+
+# Equivalencias Externas
+owl:sameAs a owl:ObjectProperty ; rdfs:label "same as" .
+
+# --- ANOTACIONES Y ATRIBUTOS ---
+
+schema:identifier a owl:DatatypeProperty ; rdfs:label "identifier" .
+rdfs:label a owl:DatatypeProperty ; rdfs:label "name" .
+skos:definition a owl:DatatypeProperty ; rdfs:label "definition" .
+sio:SIO_000008 a owl:ObjectProperty ; rdfs:label "has attribute" .
