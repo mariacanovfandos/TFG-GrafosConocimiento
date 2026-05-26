@@ -1,0 +1,30 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sio: <http://semanticscience.org/resource/>
+PREFIX biolink: <https://w3id.org/biolink/vocab/>
+
+SELECT ?Candidato_Protector
+        (COUNT(DISTINCT ?uri_gen) AS ?Dianas_Cubiertas)
+        (GROUP_CONCAT(DISTINCT ?Gen_Nombre; separator=", ") AS ?Genes_Rescatados)
+        (SAMPLE(?Ruta_Reparacion) AS ?Mecanismo_Sistemico)
+WHERE {
+  VALUES ?Gen_Nombre { "SIRT1" "CASP3" "GFAP" "DRD2" "BDNF" "PARP1" }
+  ?uri_gen rdfs:label ?Gen_Nombre .
+  ?asoc_c a sio:SIO_001257 ;
+           rdf:subject ?uri_c ;
+           rdf:object ?uri_gen .
+  ?uri_c rdfs:label ?Candidato_Raw .
+
+  OPTIONAL {
+    ?asoc_ge rdf:subject ?uri_gen ; rdf:object ?uri_enf .
+    ?asoc_dp rdf:type biolink:Association ; rdf:subject ?uri_enf ; rdf:object ?path_uri .
+    ?path_uri rdfs:label ?Ruta_Reparacion .
+    FILTER(REGEX(?Ruta_Reparacion, "signaling|survival|homeostasis|response", "i"))
+  }
+
+  BIND(STR(?Candidato_Raw) AS ?Candidato_Protector)
+}
+GROUP BY ?Candidato_Protector
+ORDER BY DESC(?Dianas_Cubiertas)
+LIMIT 10
+
