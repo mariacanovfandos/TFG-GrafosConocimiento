@@ -1,0 +1,20 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sio: <http://semanticscience.org/resource/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+SELECT ?Quimico ?DrugBank_ID (COUNT(DISTINCT ?gen) AS ?Total_Genes_Alterados)
+WHERE {
+# Relación Químico-Gen
+?asoc_qg rdf:type sio:SIO_001257 ;
+rdf:subject ?quimico_ctd ;
+rdf:object ?gen .
+?quimico_ctd rdfs:label ?Quimico ;
+owl:sameAs ?inchikey .
+# FILTRO OBLIGATORIO: Debe tener ID de DrugBank
+?db_uri owl:sameAs ?inchikey .
+BIND(REPLACE(STR(?db_uri), ".*#", "") AS ?DrugBank_ID)
+FILTER(CONTAINS(?DrugBank_ID, "DB"))
+}
+GROUP BY ?Quimico ?DrugBank_ID
+ORDER BY DESC(?Total_Genes_Alterados)
+LIMIT 10
