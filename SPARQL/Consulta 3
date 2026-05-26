@@ -1,0 +1,58 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sio: <http://semanticscience.org/resource/>
+PREFIX biolink: <https://w3id.org/biolink/vocab/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?Gen_Simbolo
+       (GROUP_CONCAT(DISTINCT ?Quimio_Etiqueta; separator=", ") AS ?Antitumoral)
+       (GROUP_CONCAT(DISTINCT ?Dopaje_Etiqueta; separator=", ") AS ?Agentes_Dopantes)
+       (SAMPLE(?Neuropatia) AS ?Efecto_Clinico_Compartido)
+       (SAMPLE(?PathwayName) AS ?Ruta_Sistemica)
+
+WHERE {
+  {
+    # Lado Quimioterapia
+    VALUES ?uri_q { <https://id.nlm.nih.gov/mesh/D017239> <https://id.nlm.nih.gov/mesh/D002945> }
+    ?assocQ a sio:SIO_001257 ;
+            (rdf:subject|rdfs:subject) ?uri_q ;
+            (rdf:object|rdfs:object) ?uri_gen .
+    ?uri_q rdfs:label ?Quimio_Etiqueta .
+  }
+  {
+    VALUES ?uri_d { <https://id.nlm.nih.gov/mesh/D013739> <https://id.nlm.nih.gov/mesh/D009243> }
+    ?assocD a sio:SIO_001257 ;
+            (rdf:subject|rdfs:subject) ?uri_d ;
+            (rdf:object|rdfs:object) ?uri_gen .
+    ?uri_d rdfs:label ?Dopaje_Etiqueta .
+  }
+
+  ?uri_gen rdfs:label ?Gen_Simbolo .
+
+  ?assoc_enf (rdf:subject|rdfs:subject) ?uri_gen ;
+             (rdf:object|rdfs:object) ?uri_enf .
+  ?uri_enf rdfs:label ?Neuropatia .
+  FILTER(REGEX(?Neuropatia, "neuro|brain|cognitiv|psych|behavior|anxiety|neuropathy", "i"))
+
+  OPTIONAL {
+    { ?uri_enf owl:sameAs ?mesh_uri . } UNION { BIND(?uri_enf AS ?mesh_uri) }
+    ?asoc_dp rdf:type biolink:Association ;
+             rdf:subject ?mesh_uri ;
+             rdf:object ?pathway_uri .
+    ?pathway_uri rdfs:label ?PathwayName .
+    FILTER(REGEX(?PathwayName, "signaling|synapse|neuronal|transmission|receptor", "i"))
+    }
+}
+GROUP BY ?Gen_Simbolo
+ORDER BY ?Gen_Simbolo
+
+
+
+
+
+
+
+
+
+
+
