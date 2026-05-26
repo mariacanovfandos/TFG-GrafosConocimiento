@@ -1,0 +1,35 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sio: <http://semanticscience.org/resource/>
+
+SELECT ?Antitumoral_Contraindicado
+        (COUNT(DISTINCT ?Nombre_Gen) AS ?Número_Genes_Acertados)
+        (GROUP_CONCAT(DISTINCT ?Nombre_Gen; separator=", ") AS ?Genes_Afectados)
+        (GROUP_CONCAT(DISTINCT ?Info_Proteina; separator=" | ") AS ?Proteinas_BioGateway)
+WHERE {
+  ?assoc a sio:SIO_001257 ;
+         (rdf:subject|rdfs:subject) ?uri_farmaco ;
+        (rdf:object|rdfs:object) ?uri_gen .
+?uri_farmaco rdfs:label ?Farmaco_Raw .
+
+  FILTER(REGEX(STR(?Farmaco_Raw),
+"platin|taxel|rubicin|trexate|vincristine|fluorouracil|cyclophosphamide", "i"))
+
+  ?uri_gen rdfs:label ?Nombre_Gen .
+  FILTER(?Nombre_Gen IN ("APOE", "APP", "MAPT", "PSEN1", "SNCA", "LRRK2", "PINK1"))
+  
+  BIND(STR(?Farmaco_Raw) AS ?Antitumoral_Contraindicado)
+
+  OPTIONAL {
+    SERVICE <https://semantics.inf.um.es/biogateway/sparql> {
+      ?uri_gen sio:SIO_010078 ?uri_prot .
+    
+      OPTIONAL { ?uri_prot rdfs:label ?prot_label . }
+      BIND(COALESCE(?prot_label, REPLACE(STR(?uri_prot), "^.*[/]", "")) AS ?Info_Proteina)
+    }
+  }
+}
+GROUP BY ?Antitumoral_Contraindicado
+HAVING (COUNT(DISTINCT ?Nombre_Gen) >= 1)
+ORDER BY DESC(?Número_Genes_Acertados)
+LIMIT 25
