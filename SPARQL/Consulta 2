@@ -1,0 +1,32 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX bao: <http://www.bioassayontology.org/bao#>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX sio: <http://semanticscience.org/resource/>
+
+SELECT DISTINCT ?ID_Gen_BioGateway ?URI_Proteina ?Fenotipo ?Químico_Relacionado
+WHERE {
+  VALUES ?uri_farmaco {
+    <https://id.nlm.nih.gov/mesh/D017239> # Paclitaxel
+    <https://id.nlm.nih.gov/mesh/D002945> # Cisplatin
+    <https://id.nlm.nih.gov/mesh/D013739> # Testosterone
+    <https://id.nlm.nih.gov/mesh/D009243> # Nandrolone
+  }
+  ?uri_farmaco bao:BAO_0000211 ?uri_gen .
+  ?uri_gen obo:RO_0002331 ?uri_go .
+
+  ?uri_go rdfs:label ?Fenotipo .
+  ?uri_farmaco rdfs:label ?Químico_Relacionado .
+
+  BIND(REPLACE(STR(?uri_gen), "http://rdf.biogateway.eu/gene/9606/", "") AS ?ID_Gen_BioGateway)
+  
+  FILTER(REGEX(STR(?Fenotipo), "oxidative|stress|response to|mitochondri|metabolic|energy", "i"))
+
+  OPTIONAL {
+    SERVICE <https://semantics.inf.um.es/biogateway/sparql> {
+      ?uri_gen sio:SIO_010078 ?URI_Proteina .
+    }
+  }
+}
+ORDER BY ?ID_Gen_BioGateway
+LIMIT 1000
