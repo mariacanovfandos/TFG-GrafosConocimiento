@@ -1,0 +1,31 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sio: <http://semanticscience.org/resource/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX schema: <https://schema.org/>
+
+SELECT DISTINCT ?Quimico ?DrugBank_ID (GROUP_CONCAT(DISTINCT ?pmid; separator=", ") AS ?Articulos_PMID) (GROUP_CONCAT(DISTINCT ?Rol; separator=", ") AS ?Roles)
+WHERE {
+  ?gen_uri rdfs:label "DRD2" .
+  
+    ?asoc rdf:type sio:SIO_001257 ;
+          rdf:subject ?quimico_ctd ;
+          rdf:object ?gen_uri .
+
+    OPTIONAL {
+      ?asoc sio:SIO_000772 ?article_node .
+      ?article_node rdf:type sio:SIO_000154 .
+      ?article_node schema:identifier ?pmid .
+}
+?quimico_ctd rdfs:label ?Quimico ;
+              owl:sameAs ?uri_inchi .
+?db_uri owl:sameAs ?uri_inchi .
+BIND(REPLACE(STR(?db_uri), ".*#", "") AS ?DrugBank_ID)
+FILTER(CONTAINS(?DrugBank_ID, "DB"))
+OPTIONAL {
+  ?u_chebi owl:sameAs ?uri_inchi .
+  ?u_chebi sio:SIO_000008 ?Rol .
+  }
+}
+GROUP BY ?Quimico ?DrugBank_ID
+ORDER BY ?Quimico
